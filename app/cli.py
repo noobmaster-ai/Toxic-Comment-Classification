@@ -8,6 +8,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Dict, Optional
 
+import pandas as pd
 import mlflow
 import optuna
 import torch
@@ -24,6 +25,8 @@ warnings.filterwarnings("ignore")
 # Typer CLI app
 app = typer.Typer()
 
+BASE_DIR = Path(__file__).parent
+
 
 @app.command()
 def download_data():
@@ -34,10 +37,10 @@ def download_data():
         but will be useful for projects having data online
     """
     # Download data
-    projects_url = (
-        "https://raw.githubusercontent.com/"
-    )
-    return None
+    data_url = "https://raw.githubusercontent.com/noobmaster-ai/Toxic-Comment-Classification/main/data/train/train.csv"
+    data = pd.read_csv(data_url)
+    data.to_csv(Path(BASE_DIR, "data\train\train.csv"))
+    logger.info("✅ Data downloaded!")
 
 
 @app.command()
