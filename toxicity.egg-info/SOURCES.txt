@@ -1,0 +1,8 @@
+pyproject.toml
+setup.py
+toxicity.egg-info/PKG-INFO
+toxicity.egg-info/SOURCES.txt
+toxicity.egg-info/dependency_links.txt
+toxicity.egg-info/entry_points.txt
+toxicity.egg-info/requires.txt
+toxicity.egg-info/top_level.txt

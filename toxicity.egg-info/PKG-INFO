@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: toxicity
+Version: 0.1
+Summary: Classification of comments into different levels of toxicity
+Home-page: UNKNOWN
+Author: Saurabh Bhondekar
+Author-email: saurabh.bhondekar@gmail.com
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >3.8
+Provides-Extra: test
+Provides-Extra: dev
+Provides-Extra: docs
