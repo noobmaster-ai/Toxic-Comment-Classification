@@ -25,7 +25,7 @@ warnings.filterwarnings("ignore")
 # Typer CLI app
 app = typer.Typer()
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 
 
 @app.command()
@@ -39,7 +39,7 @@ def download_data():
     # Download data
     data_url = "https://raw.githubusercontent.com/noobmaster-ai/Toxic-Comment-Classification/main/data/train/train.csv"
     data = pd.read_csv(data_url)
-    data.to_csv(Path(BASE_DIR, "data\train\train.csv"))
+    data.to_csv(Path(BASE_DIR, "data\\train\\train.csv"))
     logger.info("✅ Data downloaded!")
 
 
@@ -145,11 +145,11 @@ def train_model(
 
 
 @app.command()
-def predict_tags(
+def predict_toxicity(
     text: Optional[
         str
     ] = "::::Well, it sucks to have a university to be nicknameless. And it's the first time in NCAA history that it has happened. /",
-    run_id: str = open(Path()(config.MODEL_DIR, "run_id.txt")).read(),
+    run_id: str = open(Path(config.MODEL_DIR, "run_id.txt")).read(),
 ) -> Dict:
     """Predict toxicity tags for a given input text using a trained model.
 
