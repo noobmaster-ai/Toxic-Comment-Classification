@@ -103,7 +103,7 @@ def set_seed(seed: int = 1234) -> None:
     random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)  # Multi GPU
+    # torch.cuda.manual_seed_all(seed)  # Multi GPU
 
 
 def set_device(cuda: bool) -> torch.device:
