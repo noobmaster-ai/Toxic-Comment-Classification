@@ -1,10 +1,6 @@
 # toxicity/main.py
 # Training, Optimization, etc.
 
-from nltk import tokenize
-from numpy.lib.twodim_base import tri
-from skmultilearn import model_selection
-from app.cli import performance
 import itertools
 import json
 from argparse import Namespace
