@@ -39,7 +39,7 @@ setup(
     description="Classification of comments into different levels of toxicity",
     author="Saurabh Bhondekar",
     author_email="saurabh.bhondekar@gmail.com",
-    python_requires=">3.7",
+    python_requires=">3.7.0",
     install_requires=[required_packages],
     extras_require={
         "test": test_packages,
