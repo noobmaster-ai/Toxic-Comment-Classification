@@ -21,8 +21,9 @@ STOPWORDS = stopwords.words("english")
 stemmer = PorterStemmer()
 
 # Label encoding decoding class
-class label_encoder(object):
+class LabelEncoder(object):
     """Label encoder for tag labels."""
+
     def __init__(self, class_to_index={}):
         self.class_to_index = class_to_index
         self.index_to_class = {v: k for k, v in self.class_to_index.items()}
@@ -57,16 +58,15 @@ class label_encoder(object):
         return classes
 
     def save(self, fp):
-        with open(fp, 'w') as fp:
-            contents = {'class_to_index': self.class_to_index}
+        with open(fp, "w") as fp:
+            contents = {"class_to_index": self.class_to_index}
             json.dump(contents, fp, indent=4, sort_keys=False)
 
     @classmethod
     def load(cls, fp):
-        with open(fp, 'r') as fp:
+        with open(fp, "r") as fp:
             kwargs = json.load(fp=fp)
         return cls(**kwargs)
-
 
 
 # Preprocessing func
