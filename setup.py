@@ -12,8 +12,8 @@ with open(Path(BASE_DIR, "requirements.txt")) as file:
     required_packages = [ln.strip() for ln in file.readlines()]
 
 test_packages = [
-    "great-expectations==0.13.7", 
-    "pytest==6.0.2", 
+    "great-expectations==0.13.7",
+    "pytest==6.0.2",
     "pytest-cov==2.10.1",
 ]
 
@@ -39,7 +39,7 @@ setup(
     description="Classification of comments into different levels of toxicity",
     author="Saurabh Bhondekar",
     author_email="saurabh.bhondekar@gmail.com",
-    python_requires=">3.8",
+    python_requires=">3.7",
     install_requires=[required_packages],
     extras_require={
         "test": test_packages,
