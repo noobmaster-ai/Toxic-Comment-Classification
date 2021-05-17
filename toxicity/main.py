@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict
 from nltk.corpus.reader import util
 
-from torch._C import device
+from torch._C import device, dtype
 
 import mlflow
 import numpy as np
@@ -42,11 +42,11 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
     df = pd.read_csv(Path(config.DATA_DIR, r"train/train.csv"))
     if params.shuffle:
         df = df.sample(frac=1).reset_index(drop=True)
-    df = df[: params.subset]
+    # df = df[: params.subset]
 
     # 4. Preprocess data
     df.comment_text = df.comment_text.apply(
-        data.data.preprocessing, lower=params.lower, stem=params.stem
+        data.preprocessing, lower=params.lower, stem=params.stem
     )
 
     # 5. Encode labels

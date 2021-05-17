@@ -44,7 +44,7 @@ class LabelEncoder(object):
         return self
 
     def encode(self, y):
-        y_one_hot = np.array(y)
+        y_one_hot = y.to_numpy()
         # for i, item in enumerate(y):
         #     for class_ in item:
         #         y_one_hot[i][self.class_to_index[class_]] = 1
