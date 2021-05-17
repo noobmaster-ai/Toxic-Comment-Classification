@@ -11,6 +11,7 @@
     "max_filter_size": 10,
     "batch_size": 128,
     "embedding_dim": 503,
+    "rnn_hidden_dim": 128,
     "num_filters": 269,
     "hidden_dim": 443,
     "dropout_p": 0.374218478616704,

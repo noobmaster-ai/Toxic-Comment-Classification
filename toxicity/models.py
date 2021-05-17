@@ -9,6 +9,33 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+# import gensim
+# from gensim.scripts.glove2word2vec import glove2word2vec
+# from gensim.models import KeyedVectors
+# from gensim.models import Word2Vec
+# from io import BytesIO
+# from urllib.request import urlopen
+# from zipfile import ZipFile
+
+# Function to get last relevant hidden layer output
+def gather_last_relevant_hidden(hiddens: int, seq_lens: int) -> torch.Tensor:
+    """Extract and collect the last relevant hidden state
+    based on the sequence length
+
+    Args:
+        hiddens (int): Output of RNN's GRU block.
+        seq_lens (int): Length of the input sequences.
+
+    Returns:
+        torch.Tensor: Output tensor.
+    """
+    seq_lens = seq_lens.long().detach().cpu().numpy() - 1
+    out = []
+    for batch_index, column_index in enumerate(seq_lens):
+        out.append(hiddens[batch_index, column_index])
+    return torch.stack(out)
+
+
 # RNN model architecture
 class RNN(nn.Module):
     def __init__(
@@ -19,7 +46,8 @@ class RNN(nn.Module):
         hidden_dim: int,
         dropout_p: int,
         num_classes: int,
-        pretrained_embeddings: bool = None,
+        device: torch.device = torch.device("cpu"),
+        pretrained_embeddings=None,
         freeze_embeddings: bool = False,
         padding_idx: int = 0,
     ) -> None:
@@ -34,6 +62,7 @@ class RNN(nn.Module):
             hidden_dim (int): Hidden dimension for fully-connected (FC) layers.
             dropout_p (float): Dropout proportion for FC layers.
             num_classes (int): Number of unique classes to classify into.
+            device (torch.device): Device to run model on. Defaults to CPU.
             pretrained_embeddings (bool): Pretrained Embeddings used for representing data.
             freeze_embeddings (bool): Option to freeze pretrained embedding or train it on available data.
             padding_idx (int, optional): Index representing the `<PAD>` token. Defaults to 0.
@@ -122,6 +151,7 @@ def initialize_model(
         hidden_dim=int(params.hidden_dim),
         dropout_p=int(params.dropout_p),
         num_classes=int(num_classes),
+        device=device,
     )
     rnn_model = rnn_model.to(device)
     return rnn_model

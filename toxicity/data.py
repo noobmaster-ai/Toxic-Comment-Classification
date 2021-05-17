@@ -14,6 +14,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from skmultilearn.model_selection import IterativeStratification
+from torch._C import dtype
 
 # Downloading Stopwords and initializing PorterStemmer
 nltk.download("stopwords")
@@ -21,21 +22,50 @@ STOPWORDS = stopwords.words("english")
 stemmer = PorterStemmer()
 
 # Label encoding decoding class
-class LabelEncoder(object):
-    """Label encoder for tag labels."""
+class LabelEncoder:
+    """Encode labels into unique indices.
+    Usage:
+    ```python
+    # Encode labels
+    label_encoder = LabelEncoder()
+    label_encoder.fit(labels)
+    y = label_encoder.encode(labels)
+    ```
+    """
 
-    def __init__(self, class_to_index={}):
-        self.class_to_index = class_to_index
+    def __init__(self, class_to_index: dict = {}):
+        self.class_to_index = class_to_index or {}  # mutable defaults ;)
         self.index_to_class = {v: k for k, v in self.class_to_index.items()}
         self.classes = list(self.class_to_index.keys())
 
     def __len__(self):
         return len(self.class_to_index)
 
-    def __str__(self):
-        return f"<LabelEncoder(num_classes={len(self)})>"
+    def save(self, fp: str):
+        with open(fp, "w") as fp:
+            contents = {"class_to_index": self.class_to_index}
+            json.dump(contents, fp, indent=4, sort_keys=False)
 
-    def fit(self, y):
+    @classmethod
+    def load(cls, fp: str):
+        with open(fp) as fp:
+            kwargs = json.load(fp=fp)
+        return cls(**kwargs)
+
+
+class MultiLabelLabelEncoder(LabelEncoder):
+    """Encode labels into unique indices
+    for multi-label classification.
+    """
+
+    def __str__(self):
+        return f"<MultiLabelLabelEncoder(num_classes={len(self)})>"
+
+    def fit(self, y: pd.DataFrame):
+        """Learn label mappings from a series of class labels.
+        Args:
+            y (DataFrame): One hot encoded columns of classes to be predicted.
+        """
         classes = list(y.columns)
         for i, class_ in enumerate(classes):
             self.class_to_index[class_] = i
@@ -43,30 +73,33 @@ class LabelEncoder(object):
         self.classes = list(self.class_to_index.keys())
         return self
 
-    def encode(self, y):
-        y_one_hot = y.to_numpy()
+    def encode(self, y: pd.DataFrame) -> np.ndarray:
+        """Encode a collection of labels using (multilabel) one-hot encoding.
+        Args:
+            y (pd.DataFrame): One hot encoded columns of classes to be predicted.
+        Returns:
+            Labels as (multilabel) one-hot encodings
+        """
+        y_one_hot = np.array(
+            y, dtype=int
+        )  # np.zeros((len(y), len(self.class_to_index)), dtype=int)
         # for i, item in enumerate(y):
         #     for class_ in item:
         #         y_one_hot[i][self.class_to_index[class_]] = 1
         return y_one_hot
 
-    def decode(self, y):
+    def decode(self, y: np.ndarray) -> List[List[str]]:
+        """Decode a (multilabel) one-hot encoding into corresponding labels.
+        Args:
+            y (np.ndarray): Labels as (multilabel) one-hot encodings
+        Returns:
+            List of original labels for each output.
+        """
         classes = []
         for i, item in enumerate(y):
-            indices = np.where(item == 1)[0]
+            indices = np.where(np.asarray(item) == 1)[0]
             classes.append([self.index_to_class[index] for index in indices])
         return classes
-
-    def save(self, fp):
-        with open(fp, "w") as fp:
-            contents = {"class_to_index": self.class_to_index}
-            json.dump(contents, fp, indent=4, sort_keys=False)
-
-    @classmethod
-    def load(cls, fp):
-        with open(fp, "r") as fp:
-            kwargs = json.load(fp=fp)
-        return cls(**kwargs)
 
 
 # Preprocessing func

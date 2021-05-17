@@ -62,7 +62,7 @@ def evaluate(
 
     # Create dataloader
     X = np.array(tokenizer.texts_to_sequences(df.texts.to_numpy()), dtype="object")
-    y = label_encoder.encode(df.iloc[2:])
+    y = data.MultiLabelLabelEncoder.encode(df.iloc[1:])
     dataset = data.RNNTextDataset(X=X, y=y)
     dataloader = dataset.create_dataloader(batch_size=int(params.batch_size))
 

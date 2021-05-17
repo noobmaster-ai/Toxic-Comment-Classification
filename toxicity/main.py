@@ -7,8 +7,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Dict
 from nltk.corpus.reader import util
-
-from torch._C import device, dtype
+from torch._C import dtype
 
 import mlflow
 import numpy as np
@@ -50,8 +49,8 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
     )
 
     # 5. Encode labels
-    labels = df.iloc[:, 2:]
-    label_encoder = data.LabelEncoder()
+    labels = df.iloc[:, 3:]
+    label_encoder = data.MultiLabelLabelEncoder()
     label_encoder.fit(labels)
     y = label_encoder.encode(labels)
 
@@ -67,7 +66,17 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
         X=X, y=y, train_size=params.train_size
     )
     X_val, X_test, y_val, y_test = data.iterative_train_test_split(X=X_, y=y_, train_size=0.5)
-    test_df = pd.DataFrame({"text": X_test, "toxicity_level": y_test})
+    test_df = pd.DataFrame(
+        {
+            "text": X_test,
+            "toxic": y_test[:, 0],
+            "severe_toxic": y_test[:, 1],
+            "obscene": y_test[:, 2],
+            "threat": y_test[:, 3],
+            "insult": y_test[:, 4],
+            "identity_hate": y_test[:, 5],
+        }
+    )
 
     # 8. Tokenize inputs
     tokenizer = data.Tokenizer(char_level=params.char_level)
