@@ -39,7 +39,7 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
     device = utils.set_device(cuda=params.cuda)
 
     # 3. Load data
-    df = pd.read_csv(Path(config.DATA_DIR, "train\\train.csv"))
+    df = pd.read_csv(Path(config.DATA_DIR, r"train\train.csv"))
     if params.shuffule:
         df = df.sample(frac=1).reset_index(drop=True)
     df = df[: params.subset]
