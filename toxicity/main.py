@@ -40,7 +40,7 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
 
     # 3. Load data
     df = pd.read_csv(Path(config.DATA_DIR, r"train/train.csv"))
-    if params.shuffule:
+    if params.shuffle:
         df = df.sample(frac=1).reset_index(drop=True)
     df = df[: params.subset]
 
