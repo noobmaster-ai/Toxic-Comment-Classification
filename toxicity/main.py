@@ -141,8 +141,8 @@ def objective(params: Namespace, trial: optuna.trial._trial.Trial) -> float:
 
     """
     # Parameters (to tune)
-    params.embedding_dim = trial.suggest_int("embedding_dim", 128, 512)
-    params.num_filters = trial.suggest_int("num_filters", 128, 512)
+    params.embedding_dim = trial.suggest_int("embedding_dim", 128, 256)
+    params.num_filters = trial.suggest_int("num_filters", 128, 256)
     params.hidden_dim = trial.suggest_int("hidden_dim", 128, 512)
     params.rnn_hidden_dim = trial.suggest_int("rnn_hidden_dim", 128, 512)
     params.dropout_p = trial.suggest_uniform("dropout_p", 0.3, 0.8)
