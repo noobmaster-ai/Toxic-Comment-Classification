@@ -6,6 +6,7 @@ import json
 import re
 from collections import Counter
 from typing import List, Sequence, Tuple
+from argparse import Namespace
 
 import numpy as np
 import pandas as pd
@@ -303,7 +304,7 @@ class Tokenizer(object):
         return cls(**kwargs)
 
 
-def pad_sequences(sequences: np.ndarray, max_seq_len: int = 0) -> np.ndarray:
+def pad_sequences(params: Namespace, sequences: np.ndarray, max_seq_len: int = 100) -> np.ndarray:
     """Zero pad sequences to a specified `max_seq_len`
     or to the length of the largest sequence in `sequences`.
     Usage:
@@ -329,7 +330,7 @@ def pad_sequences(sequences: np.ndarray, max_seq_len: int = 0) -> np.ndarray:
         An array with the zero padded sequences.
     """
     # Get max sequence length
-    max_seq_len = max(max_seq_len, max(len(sequence) for sequence in sequences))
+    max_seq_len = params.max_seq_len
 
     # Pad
     padded_sequences = np.zeros((len(sequences), max_seq_len))
