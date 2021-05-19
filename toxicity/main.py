@@ -86,12 +86,12 @@ def run(params: Namespace, trial: optuna.trial._trial.Trial = None) -> Dict:
     X_test = np.array(tokenizer.texts_to_sequences(X_test), dtype=object)
 
     # 9. Create Dataloaders
-    train_dataset = data.RNNTextDataset(X=X_train, y=y_train)
-    test_dataset = data.RNNTextDataset(X=X_test, y=y_test)
-    val_dataset = data.RNNTextDataset(X=X_val, y=y_val)
+    train_dataset = data.RNNTextDataset(X=X_train, y=y_train, max_seq_len=params.max_seq_len)
+    # test_dataset = data.RNNTextDataset(X=X_test, y=y_test, max_seq_len=params.max_seq_len)
+    val_dataset = data.RNNTextDataset(X=X_val, y=y_val, max_seq_len=params.max_seq_len)
 
     train_dataloader = train_dataset.create_dataloader(batch_size=params.batch_size)
-    test_dataloader = test_dataset.create_dataloader(batch_size=params.batch_size)
+    # test_dataloader = test_dataset.create_dataloader(batch_size=params.batch_size)
     val_dataloader = val_dataset.create_dataloader(batch_size=params.batch_size)
 
     # 10. Initialize model

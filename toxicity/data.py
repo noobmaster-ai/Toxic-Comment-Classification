@@ -304,7 +304,7 @@ class Tokenizer(object):
         return cls(**kwargs)
 
 
-def pad_sequences(params: Namespace, sequences: np.ndarray, max_seq_len: int = 100) -> np.ndarray:
+def pad_sequences(sequences: np.ndarray, max_seq_len: int = 100) -> np.ndarray:
     """Zero pad sequences to a specified `max_seq_len`
     or to the length of the largest sequence in `sequences`.
     Usage:
@@ -323,14 +323,14 @@ def pad_sequences(params: Namespace, sequences: np.ndarray, max_seq_len: int = 1
         Check out this [implemention](https://madewithml.com/courses/ml-foundations/convolutional-neural-networks/#padding){:target="_blank"} for a more generalized approach.
     Args:
         sequences (np.ndarray): 2D array of data to be padded.
-        max_seq_len (int, optional): Length to pad sequences to. Defaults to 0.
+        max_seq_len (int, optional): Length to pad sequences to. Defaults to 100.
     Raises:
         ValueError: Input sequences are not two-dimensional.
     Returns:
         An array with the zero padded sequences.
     """
     # Get max sequence length
-    max_seq_len = params.max_seq_len
+    # max_seq_len = params.max_seq_len
 
     # Pad
     padded_sequences = np.zeros((len(sequences), max_seq_len))
@@ -356,9 +356,10 @@ class RNNTextDataset(torch.utils.data.Dataset):
 
     """
 
-    def __init__(self, X, y):
+    def __init__(self, X, y, max_seq_len):
         self.X = X
         self.y = y
+        self.max_seq_len = max_seq_len
 
     def __len__(self):
         return len(self.y)
@@ -388,7 +389,7 @@ class RNNTextDataset(torch.utils.data.Dataset):
         y = np.stack(batch[:, 2], axis=0)
 
         # Pad inputs
-        X = pad_sequences(sequences=X)
+        X = pad_sequences(sequences=X, max_seq_len=self.max_seq_len)
 
         # Cast
         X = torch.LongTensor(X.astype(np.int32))
@@ -405,7 +406,7 @@ class RNNTextDataset(torch.utils.data.Dataset):
 
         # Create dataset
         X, y = data
-        dataset = CNNTextDataset(X=X, y=y, max_filter_size=max_filter_size)
+        dataset = RNNTextDataset(X=X, y=y, max_filter_size=max_filter_size)
 
         # Create dataloaders
         dataloader = dataset.create_dataloader(batch_size=batch_size)
