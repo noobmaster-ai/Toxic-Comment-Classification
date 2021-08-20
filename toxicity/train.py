@@ -61,6 +61,7 @@ class Trainer:
 
             # Calculating cumulative loss at intermediate steps
             loss += (J.detach().item() - loss) / (i + 1)
+            del z, J
 
         return loss
 
@@ -88,11 +89,12 @@ class Trainer:
                 J = self.loss_fn(z, y_true.type_as(z)).item()  # Get loss
 
                 # Calculating cumulative loss at intermediate steps
-                loss += (J - loss) / (i + 1)
+                loss += float((J - loss) / (i + 1))
 
                 ##Store outputs
                 y_prob = torch.sigmoid(z).cpu().numpy()
                 y_probs.extend(y_prob)
+                del z, J, y_prob
                 y_trues.extend(y_true.cpu().numpy())
 
         return loss, np.vstack(y_trues), np.vstack(y_probs)
@@ -124,6 +126,7 @@ class Trainer:
                 # Store outputs
                 y_prob = torch.sigmoid(z).cpu().numpy()
                 y_probs.extend(y_prob)
+                del z, y_prob
                 y_trues.extend(targets.cpu().numpy())
 
         return np.vstack(y_trues), np.vstack(y_probs)
@@ -193,6 +196,7 @@ class Trainer:
                 f" lr : {self.optimizer.param_groups[0]['lr'] : .2E},"
                 f" _patience : {_patience}"
             )
+            del train_loss, val_loss
 
         return best_model, best_val_loss
 

@@ -304,7 +304,7 @@ class Tokenizer(object):
         return cls(**kwargs)
 
 
-def pad_sequences(sequences: np.ndarray, max_seq_len: int = 100) -> np.ndarray:
+def pad_sequences(sequences: np.ndarray, max_seq_len: int = 0) -> np.ndarray:
     """Zero pad sequences to a specified `max_seq_len`
     or to the length of the largest sequence in `sequences`.
     Usage:
@@ -330,7 +330,7 @@ def pad_sequences(sequences: np.ndarray, max_seq_len: int = 100) -> np.ndarray:
         An array with the zero padded sequences.
     """
     # Get max sequence length
-    # max_seq_len = params.max_seq_len
+    max_seq_len = max(max_seq_len, max(len(sequence) for sequence in sequences))
 
     # Pad
     padded_sequences = np.zeros((len(sequences), max_seq_len))
@@ -356,10 +356,9 @@ class RNNTextDataset(torch.utils.data.Dataset):
 
     """
 
-    def __init__(self, X, y, max_seq_len):
+    def __init__(self, X, y):
         self.X = X
         self.y = y
-        self.max_seq_len = max_seq_len
 
     def __len__(self):
         return len(self.y)
@@ -389,7 +388,7 @@ class RNNTextDataset(torch.utils.data.Dataset):
         y = np.stack(batch[:, 2], axis=0)
 
         # Pad inputs
-        X = pad_sequences(sequences=X, max_seq_len=self.max_seq_len)
+        X = pad_sequences(sequences=X)
 
         # Cast
         X = torch.LongTensor(X.astype(np.int32))
